@@ -1,0 +1,40 @@
+###############Explanation of Datasets###############
+There are 6 datasets included in this distribution.
+
+The training datasets (RPI2241):
+1. Positive:
+	Positive_Fasta_RPI2241.txt
+2. Negative:
+	Negative_Fasta_RPI2241.txt
+
+Testing datasets (RPI12252):
+3. Positive:
+	NPInter_UniqSeq.txt 
+4. Negative dataset:
+	NRBP_pairs.txt
+
+FMRP interactions:
+5. Positive:
+	fmrp_positive_interactions.txt
+6. Negative FMRP interactions:
+	fmrp_negative_interactions.txt
+	
+	
+All files are in the (.rpi) format:
+
+>Heading
+PROTEINSEQUENCE
+RNASEQUENCE
+
+The RPI2241 dataset can be found here:
+Muppirala UK, Honavar VG, Dobbs D. Predicting RNA-Protein Interactions Using Only Sequence Information. BMC Bioinformatics. (2011) 12:489 
+DOI: 10.1186/1471-2105-12-489
+https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-489
+
+The RPI12252 dataset was created by Rasna Walia.
+The publishing of this dataset is pending.
+
+The positive interactions for the FMRP dataset come from:
+Darnell JC, Jensen KB, Jin P, Brown V, Warren ST, Darnell RB. Fragile X Mental Retardation Protein Targets G Quartet mRNAs Important for Neuronal Function. (2001) 107(4):489-499
+DOI: 10.1016/S0092-8674(01)00566-9
+http://www.sciencedirect.com/science/article/pii/S0092867401005669
