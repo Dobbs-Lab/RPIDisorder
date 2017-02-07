@@ -228,3 +228,80 @@ writeSpArff <- function(df, fileName){
   sink(NULL)
   return(TRUE)
 }
+
+getDisorderFeatureVector <- function(inFile){
+   contents <- read.table(inFile, na.strings="NOTAPPLICABLE", skip=3, stringsAsFactors = FALSE)
+   
+   #calculate features
+   percentDisordered <- length(which(contents$V3=="*"))/nrow(contents)
+   
+   #Determine physicochemical property % disordered
+   hydrophilicAA <- c("R", "N", "D", "E", "Q", "K", "S", "T")
+   modHydroAA <- c("C", "H", "M")
+   hydrophobicAA <- c("A", "V", "G", "I", "L", "F", "P", "W", "Y")
+   posChargeAA <- c("R", "K", "H")
+   neutChargeAA <- c("N", "Q", "S", "T", "C", "M", "A", "V", "G", "I", "L", "F", "P", "W", "Y")
+   negChargeAA <- c("D", "E")
+   
+   perDisPhillic <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophilicAA)))/length(which((contents$V3=="*")))
+   perDisMod <- length(which((contents$V3=="*")&(contents$V2 %in% modHydroAA)))/length(which((contents$V3=="*")))
+   perDisPhobic <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophobicAA)))/length(which((contents$V3=="*")))
+   perDisPos <- length(which((contents$V3=="*")&(contents$V2 %in% posChargeAA)))/length(which((contents$V3=="*")))
+   perDisNeg <- length(which((contents$V3=="*")&(contents$V2 %in% negChargeAA)))/length(which((contents$V3=="*")))
+   perDisNeut <- length(which((contents$V3=="*")&(contents$V2 %in% neutChargeAA)))/length(which((contents$V3=="*")))
+   
+   perOrdPhillic <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophilicAA)))/length(which((contents$V3!="*")))
+   perOrdMod <- length(which((contents$V3!="*")&(contents$V2 %in% modHydroAA)))/length(which((contents$V3!="*")))
+   perOrdPhobic <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophobicAA)))/length(which((contents$V3!="*")))
+   perOrdPos <- length(which((contents$V3!="*")&(contents$V2 %in% posChargeAA)))/length(which((contents$V3!="*")))
+   perOrdNeg <- length(which((contents$V3!="*")&(contents$V2 %in% negChargeAA)))/length(which((contents$V3!="*")))
+   perOrdNeut <- length(which((contents$V3!="*")&(contents$V2 %in% neutChargeAA)))/length(which((contents$V3!="*")))
+   
+   
+   #Determine disordered quartiles
+   quartileSize <- trunc(nrow(contents)/4)
+   additional4 <- seq(1, ((nrow(contents)/4)-quartileSize)*4)
+   
+   range1 <- quartileSize + (if(1 %in% additional4){1}else{0})
+   range2 <- range1 + quartileSize + (if(2 %in% additional4){1}else{0})
+   range3 <- range2 + quartileSize + (if(3 %in% additional4){1}else{0})
+   range4 <- range3 + quartileSize + (if(4 %in% additional4){1}else{0})
+   
+   q1 <- round(length(which(contents$V3[1:range1]=="*"))/(quartileSize + (if(1 %in% additional4){1}else{0})), digits=6)
+   q2 <- round(length(which(contents$V3[(range1+1):range2]=="*"))/(quartileSize+(if(2 %in% additional4){1}else{0})), digits=6)
+   q3 <- round(length(which(contents$V3[(range2+1):range3]=="*"))/(quartileSize+(if(3 %in% additional4){1}else{0})), digits=6)
+   q4 <- round(length(which(contents$V3[(range3+1):range4]=="*"))/(quartileSize+(if(4 %in% additional4){1}else{0})), digits=6)
+   
+   #Determine disordered tenths
+   tenthSize <- trunc(nrow(contents)/10)
+   additional10 <- seq(1, ((nrow(contents)/10)-tenthSize)*10)
+   
+   ranget1 <- tenthSize + (if(1 %in% additional10){1}else{0})
+   ranget2 <- ranget1 + tenthSize + (if(2 %in% additional10){1}else{0})
+   ranget3 <- ranget2 + tenthSize + (if(3 %in% additional10){1}else{0})
+   ranget4 <- ranget3 + tenthSize + (if(4 %in% additional10){1}else{0})
+   ranget5 <- ranget4 + tenthSize + (if(5 %in% additional10){1}else{0})
+   ranget6 <- ranget5 + tenthSize + (if(6 %in% additional10){1}else{0})
+   ranget7 <- ranget6 + tenthSize + (if(7 %in% additional10){1}else{0})
+   ranget8 <- ranget7 + tenthSize + (if(8 %in% additional10){1}else{0})
+   ranget9 <- ranget8 + tenthSize + (if(9 %in% additional10){1}else{0})
+   ranget10 <- ranget9 + tenthSize + (if(10 %in% additional10){1}else{0})
+   
+   t1 <- round(length(which(contents$V3[1:ranget1]=="*"))/(tenthSize + (if(1 %in% additional10){1}else{0})), digits=6)
+   t2 <- round(length(which(contents$V3[(ranget1+1):ranget2]=="*"))/(tenthSize + (if(2 %in% additional10){1}else{0})), digits=6)
+   t3 <- round(length(which(contents$V3[(ranget2+1):ranget3]=="*"))/(tenthSize + (if(3 %in% additional10){1}else{0})), digits=6)
+   t4 <- round(length(which(contents$V3[(ranget3+1):ranget4]=="*"))/(tenthSize + (if(4 %in% additional10){1}else{0})), digits=6)
+   t5 <- round(length(which(contents$V3[(ranget4+1):ranget5]=="*"))/(tenthSize + (if(5 %in% additional10){1}else{0})), digits=6)
+   t6 <- round(length(which(contents$V3[(ranget5+1):ranget6]=="*"))/(tenthSize + (if(6 %in% additional10){1}else{0})), digits=6)
+   t7 <- round(length(which(contents$V3[(ranget6+1):ranget7]=="*"))/(tenthSize + (if(7 %in% additional10){1}else{0})), digits=6)
+   t8 <- round(length(which(contents$V3[(ranget7+1):ranget8]=="*"))/(tenthSize + (if(8 %in% additional10){1}else{0})), digits=6)
+   t9 <- round(length(which(contents$V3[(ranget8+1):ranget9]=="*"))/(tenthSize + (if(9 %in% additional10){1}else{0})), digits=6)
+   t10 <- round(length(which(contents$V3[(ranget9+1):ranget10]=="*"))/(tenthSize + (if(10 %in% additional10){1}else{0})), digits=6)
+   
+   
+   tempDF <- data.frame(D1 = percentDisordered, D2 = q1, D3 = q2, D4 = q3, D5 = q4, D6 = t1, D7 = t2, D8 = t3, D9 = t4, D10 = t5, D11 = t6, D12 = t7, D13 = t8, D14 = t9, D15 = t10, Disordered_phillic = perDisPhillic, Disordered_Mod = perDisMod, Disordered_phobic = perDisPhobic, Disordered_Pos = perDisPos, Disordered_Neg = perDisNeg, Disordered_Neut = perDisNeut, Ordered_phillic = perOrdPhillic, Ordered_Mod = perOrdMod, Ordered_phobic = perOrdPhobic, Ordered_pos = perOrdPos, Ordered_Neg = perOrdNeg, Ordered_Neut = perOrdNeut, stringsAsFactors = FALSE)
+   
+   return(tempDF)
+}
+
+
