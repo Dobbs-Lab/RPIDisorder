@@ -5,7 +5,21 @@ and are not part of the datasets used in experiments.
 
 RPIDisorder requires predicted disorder information from DISOPRED. You can predict disorder
 for a single sequence using the online server here: http://bioinf.cs.ucl.ac.uk/psipred/?disopred=1
-Or you can download and install the offline version here: http://bioinfadmin.cs.ucl.ac.uk/downloads/DISOPRED/
+This is recommended for most users, as it can be difficult to install and configure the 
+necessary dependencies to run DISOPRED locally.
+
+
+If you wish to run DISOPRED locally, download and install the offline version here:
+http://bioinfadmin.cs.ucl.ac.uk/downloads/DISOPRED/
+
+Installation instructions are included in the DISOPRED README file.
+
+Please note that DISOPRED requires a local installation of NCBI BLAST v2.2.26, which is available here:ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.26/
+
+NCBI BLAST requires a sequence database; RPIDisorder was created using the SwissProtDB:
+ftp://ftp.ebi.ac.uk/pub/databases/uniprot/knowledgebase/uniprot_sprot.fasta.gz
+
+
 
 The WEKA machine learning platform is required. Download here: http://www.cs.waikato.ac.nz/ml/weka/downloading.html
 You will also require the latest version of R: https://www.r-project.org/
