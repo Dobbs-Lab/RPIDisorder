@@ -9,7 +9,7 @@
 ## [0. Citing RPIDisorder](https:/github.com/Dobbsh-Lab/RPIDisorder#0-citing-rpidisorder)
 ## [A. Installing Software Dependencies](https:/github.com/Dobbsh-Lab/RPIDisorder#A-installing-software-dependencies)
 ## [B. Running the RPIDisorder Pipeline](https:/github.com/Dobbsh-Lab/RPIDisorder#B-running-the-rpidisorder-pipeline)
-## [C. Interpreting Results](https:/github.com/Dobbsh-Lab/RPIDisorder#C-interpreting results)
+## [C. Interpreting Results](https:/github.com/Dobbsh-Lab/RPIDisorder#C-interpreting-results)
 ## [D. Troubleshooting](https:/github.com/Dobbsh-Lab/RPIDisorder#D-troubleshooting)
 ## ********************************************************
 
