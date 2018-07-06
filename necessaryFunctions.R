@@ -179,42 +179,44 @@ getRpiDisorderArff <- function(protSeq, rnaSeq, disoFile){
 #'
 #' @examples
 
-writeSpArffRpiDisorder <- function(df, fileName){
+writeSpArffRpiDisorder <- function(df, fileName, appending){
   UseMethod("writeSpArff", df)
 }
 
-writeSpArff <- function(df, fileName){
+writeSpArff <- function(df, fileName, appending = FALSE){
 
   sink(file=fileName, append=TRUE, type="output")
   colList <- colnames(df)
 
-  pNames <- unlist(lapply("P", paste0, as.character(1:343)))
-  rNames <- unlist(lapply("R", paste0, as.character(1:256)))
-  colListV <- c(pNames, rNames, "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "disPhillic", "disMod", "disPhobic", "disPos", "disNeg", "disNeut", "ordPhillic", "ordMod", "ordPhobic", "ordPos", "ordNeg", "ordNeut","class")
-
-  cat(paste0("@relation ", substitute(df), " \n"), append=TRUE)
-
-  #Write ARFF headings
-  for(i in 1:(length(colListV)-1)){
-    if(i < 627){
-      typeStuff <- "numeric"
-    }
-    outLine <- paste0("@attribute ", colListV[i], " ", typeStuff)
-    cat(outLine, append=TRUE)
-    cat("\n", append=TRUE)
+  if(!appending){
+  	pNames <- unlist(lapply("P", paste0, as.character(1:343)))
+  	rNames <- unlist(lapply("R", paste0, as.character(1:256)))
+  	colListV <- c(pNames, rNames, "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "disPhillic", "disMod", "disPhobic", "disPos", "disNeg", "disNeut", "ordPhillic", "ordMod", "ordPhobic", "ordPos", "ordNeg", "ordNeut","class")
+  	
+  	cat(paste0("@relation ", substitute(df), " \n"), append=TRUE)
+  	
+  	#Write ARFF headings
+  	for(i in 1:(length(colListV)-1)){
+  		if(i < 627){
+  			typeStuff <- "numeric"
+  		}
+  		outLine <- paste0("@attribute ", colListV[i], " ", typeStuff)
+  		cat(outLine, append=TRUE)
+  		cat("\n", append=TRUE)
+  	}
+  	
+  	cat("@attribute class {0,1}", append=TRUE)
+  	cat("\n", append=TRUE)
+  	cat("@data", append=TRUE)
   }
-
-  cat("@attribute class {0,1}", append=TRUE)
+ 
   cat("\n", append=TRUE)
-  cat("@data", append=TRUE)
-  cat("\n", append=TRUE)
-
   cat("{", append=TRUE)
 
   for(k in 1:627){
     colNum <- k
     if(k < 627){
-      if(arffData[1,k] != 0){
+      if(df[1,k] != 0){
         dat <- paste0(colNum-1, " ", round(as.numeric(df[1,k]), digits = 6), ",")
         cat(dat, append=TRUE)
       }
@@ -243,19 +245,41 @@ getDisorderFeatureVector <- function(inFile){
    neutChargeAA <- c("N", "Q", "S", "T", "C", "M", "A", "V", "G", "I", "L", "F", "P", "W", "Y")
    negChargeAA <- c("D", "E")
    
-   perDisPhillic <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophilicAA)))/length(which((contents$V3=="*")))
-   perDisMod <- length(which((contents$V3=="*")&(contents$V2 %in% modHydroAA)))/length(which((contents$V3=="*")))
-   perDisPhobic <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophobicAA)))/length(which((contents$V3=="*")))
-   perDisPos <- length(which((contents$V3=="*")&(contents$V2 %in% posChargeAA)))/length(which((contents$V3=="*")))
-   perDisNeg <- length(which((contents$V3=="*")&(contents$V2 %in% negChargeAA)))/length(which((contents$V3=="*")))
-   perDisNeut <- length(which((contents$V3=="*")&(contents$V2 %in% neutChargeAA)))/length(which((contents$V3=="*")))
+   if(length(which(contents$V3=="*")) > 0){
+   	perDisPhillic <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophilicAA)))/ length(which((contents$V3=="*")))
+   	perDisMod     <- length(which((contents$V3=="*")&(contents$V2 %in% modHydroAA)))   / length(which((contents$V3=="*")))
+   	perDisPhobic  <- length(which((contents$V3=="*")&(contents$V2 %in% hydrophobicAA)))/ length(which((contents$V3=="*")))
+   	perDisPos     <- length(which((contents$V3=="*")&(contents$V2 %in% posChargeAA)))  / length(which((contents$V3=="*")))
+   	perDisNeg     <- length(which((contents$V3=="*")&(contents$V2 %in% negChargeAA)))  / length(which((contents$V3=="*")))
+   	perDisNeut    <- length(which((contents$V3=="*")&(contents$V2 %in% neutChargeAA))) / length(which((contents$V3=="*")))
+   } else {
+   	perDisPhillic <- 0
+   	perDisMod     <- 0
+   	perDisPhobic  <- 0
+   	perDisPos     <- 0
+   	perDisNeg     <- 0
+   	perDisNeut    <- 0
+   }
    
-   perOrdPhillic <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophilicAA)))/length(which((contents$V3!="*")))
-   perOrdMod <- length(which((contents$V3!="*")&(contents$V2 %in% modHydroAA)))/length(which((contents$V3!="*")))
-   perOrdPhobic <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophobicAA)))/length(which((contents$V3!="*")))
-   perOrdPos <- length(which((contents$V3!="*")&(contents$V2 %in% posChargeAA)))/length(which((contents$V3!="*")))
-   perOrdNeg <- length(which((contents$V3!="*")&(contents$V2 %in% negChargeAA)))/length(which((contents$V3!="*")))
-   perOrdNeut <- length(which((contents$V3!="*")&(contents$V2 %in% neutChargeAA)))/length(which((contents$V3!="*")))
+   
+   if(length(which(contents$V3!="*")) > 0){
+   	perOrdPhillic <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophilicAA)))/ length(which((contents$V3!="*")))
+   	perOrdMod     <- length(which((contents$V3!="*")&(contents$V2 %in% modHydroAA)))   / length(which((contents$V3!="*")))
+   	perOrdPhobic  <- length(which((contents$V3!="*")&(contents$V2 %in% hydrophobicAA)))/ length(which((contents$V3!="*")))
+   	perOrdPos     <- length(which((contents$V3!="*")&(contents$V2 %in% posChargeAA)))  / length(which((contents$V3!="*")))
+   	perOrdNeg     <- length(which((contents$V3!="*")&(contents$V2 %in% negChargeAA)))  / length(which((contents$V3!="*")))
+   	perOrdNeut    <- length(which((contents$V3!="*")&(contents$V2 %in% neutChargeAA))) / length(which((contents$V3!="*")))
+   } else {
+   	perOrdPhillic <- 0
+   	perOrdMod     <- 0
+   	perOrdPhobic  <- 0
+   	perOrdPos     <- 0
+   	perOrdNeg     <- 0
+   	perOrdNeut    <- 0
+   }
+   
+   
+
    
    
    #Determine disordered quartiles
@@ -299,7 +323,34 @@ getDisorderFeatureVector <- function(inFile){
    t10 <- round(length(which(contents$V3[(ranget9+1):ranget10]=="*"))/(tenthSize + (if(10 %in% additional10){1}else{0})), digits=6)
    
    
-   tempDF <- data.frame(D1 = percentDisordered, D2 = q1, D3 = q2, D4 = q3, D5 = q4, D6 = t1, D7 = t2, D8 = t3, D9 = t4, D10 = t5, D11 = t6, D12 = t7, D13 = t8, D14 = t9, D15 = t10, Disordered_phillic = perDisPhillic, Disordered_Mod = perDisMod, Disordered_phobic = perDisPhobic, Disordered_Pos = perDisPos, Disordered_Neg = perDisNeg, Disordered_Neut = perDisNeut, Ordered_phillic = perOrdPhillic, Ordered_Mod = perOrdMod, Ordered_phobic = perOrdPhobic, Ordered_pos = perOrdPos, Ordered_Neg = perOrdNeg, Ordered_Neut = perOrdNeut, stringsAsFactors = FALSE)
+   tempDF <- data.frame(D1 = percentDisordered, 
+   										 D2 = q1, 
+   										 D3 = q2, 
+   										 D4 = q3, 
+   										 D5 = q4, 
+   										 D6 = t1, 
+   										 D7 = t2, 
+   										 D8 = t3, 
+   										 D9 = t4, 
+   										 D10 = t5, 
+   										 D11 = t6, 
+   										 D12 = t7, 
+   										 D13 = t8, 
+   										 D14 = t9, 
+   										 D15 = t10, 
+   										 Disordered_phillic = perDisPhillic, 
+   										 Disordered_Mod = perDisMod, 
+   										 Disordered_phobic = perDisPhobic, 
+   										 Disordered_Pos = perDisPos, 
+   										 Disordered_Neg = perDisNeg, 
+   										 Disordered_Neut = perDisNeut, 
+   										 Ordered_phillic = perOrdPhillic, 
+   										 Ordered_Mod = perOrdMod, 
+   										 Ordered_phobic = perOrdPhobic, 
+   										 Ordered_pos = perOrdPos, 
+   										 Ordered_Neg = perOrdNeg, 
+   										 Ordered_Neut = perOrdNeut, 
+   										 stringsAsFactors = FALSE)
    
    return(tempDF)
 }
