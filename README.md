@@ -182,5 +182,17 @@ In the upper left-hand corner, select 'Open File.' Navigate to your .arff file g
 
 
 # [C. Interpreting Results](#C-interpeting-results)
+In the results from your Weka prediction, you will see a 5-column table called " === Predictions on user test set === ".
+The first column is the instance number, and a way of keeping track which prediction is which if you have multiple instances in an .arff file. The second column is the 'actual' value; this will most likely be "1:?" which indicates that the actual class is unknown. The predicted column will contain either "1:0" or "2:1". "1:0" indicates a prediction of class 1, whose value is 0. This means that the corresponding RNA-protein pair IS NOT predicted to interact. "2:1" indicates a prediction of class 2, whose value is 1. This means that the corresponding RNA-protein pair IS predicted to interact. The "error" column will be empty, as the "True" class is unknown. The final column "prediction", contains the probability that the instance is of its assigned class.
+
+Example of a predicted interaction:
+inst#     actual  predicted error prediction
+    1        1:?        2:1       0.726 
 
 
+Example of a predicted non-interaction:
+inst#     actual  predicted error prediction
+    1        1:?        0:1       0.64 
+
+# [D. Troubleshooting](#D-troubleshooting)
+If you need help with RPIDisorder, please contact Carla Mann at cmmann(at)iastate.edu, with the subject "RPIDisorder Help".
